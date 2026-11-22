@@ -1,0 +1,11 @@
+import {readFile,writeFile} from 'node:fs/promises';
+import {fileURLToPath} from 'node:url';
+import {dirname,join} from 'node:path';
+const root=dirname(fileURLToPath(import.meta.url));
+const files=await Promise.all(['content.js','core.js','app.js','styles.css','index.html'].map(f=>readFile(join(root,'dist',f),'utf8')));
+const strip=s=>s.replace(/^import .*;\r?\n/gm,'').replace(/^export /gm,'');
+const vocabularyModule=await readFile(join(root,'dist','textbook-vocabulary.js'),'utf8');
+const code=[strip(vocabularyModule),strip(files[0]),strip(files[1]),'const baseCards = cards;',strip(files[2])].join('\n');
+const html=files[4].replace('<link rel="icon" href="./favicon.svg" type="image/svg+xml">','').replace('<link rel="stylesheet" href="./styles.css">',()=>'<style>'+files[3]+'</style>').replace('<script type="module" src="./app.js"></script>',()=>'<script type="module">'+code.replace(/<\/script/gi,'<\\/script')+'</script>');
+await writeFile(join(root,'dist','Lernraum.html'),html);
+console.log('Created dist/Lernraum.html — open directly in a browser.');

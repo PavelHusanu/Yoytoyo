@@ -1,0 +1,15 @@
+{
+  "name": "lernraum",
+  "version": "1.2.0",
+  "private": true,
+  "type": "module",
+  "description": "A local-first German study companion",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test tests/core.test.mjs",
+    "check": "node --check dist/app.js && node --check dist/core.js && node --check dist/content.js && node --check dist/textbook-vocabulary.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
